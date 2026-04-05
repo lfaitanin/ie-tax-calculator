@@ -1,14 +1,11 @@
 /**
  * Irish Tax Calculator 2025
- * Based on Budget October 2024 rates (applicable for tax year 2025)
+ * Budget October 2024 rates (tax year 2025)
  *
- * Components:
- *  - Income Tax (PAYE): 20% / 40% with personal & PAYE credits
- *  - USC (Universal Social Charge): 0.5% – 8% banded
- *  - PRSI (Pay Related Social Insurance): 4% Class A employees
- *
- * Assumptions: single person, PAYE employee, no additional credits/deductions.
+ * Income Tax · USC · PRSI · Pension relief
  */
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface TaxBreakdown {
   gross: number
@@ -17,61 +14,66 @@ export interface TaxBreakdown {
   prsi: number
   totalDeductions: number
   netPay: number
-  effectiveRate: number     // % of gross
-  incomeTaxPct: number      // incomeTax as % of gross
+  effectiveRate: number
+  incomeTaxPct: number
   uscPct: number
   prsiPct: number
   netPct: number
+  marginalRate: 0 | 20 | 40  // % as integer
 }
 
-// ── 2025 Tax Rates ────────────────────────────────────────────────────────────
+export interface PensionResult {
+  contribution: number
+  taxSaved: number
+  netCost: number
+  marginalRate: number
+  taxAfter: TaxBreakdown
+}
+
+// ── 2025 Rates ────────────────────────────────────────────────────────────────
 
 const RATES = {
-  // Income Tax
-  standardRateBand: 42000,
-  standardRate: 0.20,
-  higherRate: 0.40,
-  personalCredit: 1875,
-  payeCredit: 1875,
+  standardRateBand: 42_000,
+  standardRate:     0.20,
+  higherRate:       0.40,
+  personalCredit:   1_875,
+  payeCredit:       1_875,
 
-  // USC
-  uscExemptThreshold: 13000,
+  uscExemptThreshold: 13_000,
   uscBands: [
-    { to: 12012, rate: 0.005 },
-    { to: 25760, rate: 0.02  },
-    { to: 70044, rate: 0.04  },
-    { to: Infinity, rate: 0.08 },
+    { to: 12_012,    rate: 0.005 },
+    { to: 25_760,    rate: 0.02  },
+    { to: 70_044,    rate: 0.04  },
+    { to: Infinity,  rate: 0.08  },
   ] as { to: number; rate: number }[],
 
-  // PRSI Class A
-  prsiThreshold: 18304, // ~€352/week × 52
-  prsiRate: 0.04,
+  prsiThreshold: 18_304,  // €352/week × 52
+  prsiRate:      0.04,
 } as const
 
-// ── Calculator ────────────────────────────────────────────────────────────────
+// ── Core calculator ───────────────────────────────────────────────────────────
 
 export function calcTax(gross: number): TaxBreakdown {
   if (gross <= 0) return zero()
 
-  // ── Income Tax ──
+  // Income Tax
   const taxAtStandard = Math.min(gross, RATES.standardRateBand) * RATES.standardRate
   const taxAtHigher   = Math.max(0, gross - RATES.standardRateBand) * RATES.higherRate
   const credits       = RATES.personalCredit + RATES.payeCredit
   const incomeTax     = Math.max(0, taxAtStandard + taxAtHigher - credits)
 
-  // ── USC ──
+  // USC (not reduced by pension contributions)
   let usc = 0
   if (gross > RATES.uscExemptThreshold) {
     let prev = 0
     for (const band of RATES.uscBands) {
       if (gross <= prev) break
-      const taxable = Math.min(gross, band.to) - prev
-      usc += taxable * band.rate
+      usc += (Math.min(gross, band.to) - prev) * band.rate
       prev = band.to
     }
   }
 
-  // ── PRSI ──
+  // PRSI (not reduced by pension contributions)
   const prsi = gross >= RATES.prsiThreshold ? gross * RATES.prsiRate : 0
 
   const totalDeductions = incomeTax + usc + prsi
@@ -79,18 +81,25 @@ export function calcTax(gross: number): TaxBreakdown {
 
   const pct = (n: number) => gross > 0 ? Math.round((n / gross) * 1000) / 10 : 0
 
+  // Marginal rate: 0 if credits absorb all tax, 20 in standard band, 40 above
+  const creditBreakeven = credits / RATES.standardRate   // ~€18,750
+  const marginalRate: 0 | 20 | 40 =
+    gross <= creditBreakeven      ? 0  :
+    gross <= RATES.standardRateBand ? 20 : 40
+
   return {
-    gross:            Math.round(gross),
-    incomeTax:        Math.round(incomeTax),
-    usc:              Math.round(usc),
-    prsi:             Math.round(prsi),
-    totalDeductions:  Math.round(totalDeductions),
-    netPay:           Math.round(netPay),
-    effectiveRate:    pct(totalDeductions),
-    incomeTaxPct:     pct(incomeTax),
-    uscPct:           pct(usc),
-    prsiPct:          pct(prsi),
-    netPct:           pct(netPay),
+    gross:           Math.round(gross),
+    incomeTax:       Math.round(incomeTax),
+    usc:             Math.round(usc),
+    prsi:            Math.round(prsi),
+    totalDeductions: Math.round(totalDeductions),
+    netPay:          Math.round(netPay),
+    effectiveRate:   pct(totalDeductions),
+    incomeTaxPct:    pct(incomeTax),
+    uscPct:          pct(usc),
+    prsiPct:         pct(prsi),
+    netPct:          pct(netPay),
+    marginalRate,
   }
 }
 
@@ -99,8 +108,56 @@ function zero(): TaxBreakdown {
     gross: 0, incomeTax: 0, usc: 0, prsi: 0,
     totalDeductions: 0, netPay: 0,
     effectiveRate: 0, incomeTaxPct: 0, uscPct: 0, prsiPct: 0, netPct: 0,
+    marginalRate: 0,
   }
 }
+
+// ── Pension optimizer ─────────────────────────────────────────────────────────
+
+/**
+ * Pension contributions reduce Income Tax base only — not USC or PRSI.
+ * The government gives back marginalRate × contribution at year end.
+ */
+export function calcPensionSaving(gross: number, contribution: number): PensionResult {
+  const clampedContrib = Math.min(Math.max(0, contribution), gross)
+  const before = calcTax(gross)
+  const after  = calcTax(Math.max(0, gross - clampedContrib))
+
+  // Only income tax changes; USC/PRSI are recalculated on full gross
+  const uscAndPrsi = before.usc + before.prsi
+  const adjustedAfter: TaxBreakdown = {
+    ...after,
+    usc:             before.usc,
+    prsi:            before.prsi,
+    totalDeductions: after.incomeTax + uscAndPrsi,
+    netPay:          gross - clampedContrib - after.incomeTax - uscAndPrsi,
+  }
+
+  const taxSaved = Math.round(before.incomeTax - after.incomeTax)
+  const netCost  = Math.round(clampedContrib - taxSaved)
+
+  return {
+    contribution: Math.round(clampedContrib),
+    taxSaved,
+    netCost,
+    marginalRate: before.marginalRate,
+    taxAfter:     adjustedAfter,
+  }
+}
+
+// ── Hourly conversion ─────────────────────────────────────────────────────────
+
+export function hourlyToAnnual(hourlyRate: number, hoursPerWeek: number): number {
+  return hourlyRate * hoursPerWeek * 52
+}
+
+export const HOURS_PRESETS: { value: number; tag?: 'stamp2Term' | 'fullTime' }[] = [
+  { value: 20, tag: 'stamp2Term' },
+  { value: 25 },
+  { value: 30 },
+  { value: 39, tag: 'fullTime' },
+  { value: 40 },
+]
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -112,5 +169,4 @@ export function fmtPct(n: number): string {
   return n.toFixed(1) + '%'
 }
 
-// Preset salaries for quick-select
-export const PRESETS = [28080, 35000, 45000, 60000, 80000, 100000]
+export const PRESETS = [28_080, 35_000, 45_000, 60_000, 80_000, 100_000]

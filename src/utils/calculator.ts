@@ -1,6 +1,6 @@
 /**
- * Irish Tax Calculator 2025
- * Budget October 2024 rates (tax year 2025)
+ * Irish Tax Calculator 2026
+ * Budget October 2025 rates (tax year 2026)
  *
  * Income Tax · USC · PRSI · Pension relief
  */
@@ -30,25 +30,25 @@ export interface PensionResult {
   taxAfter: TaxBreakdown
 }
 
-// ── 2025 Rates ────────────────────────────────────────────────────────────────
+// ── 2026 Rates (Budget 2026, effective Jan 2026) ──────────────────────────────
 
 const RATES = {
-  standardRateBand: 42_000,
+  standardRateBand: 44_000,   // unchanged from Budget 2025
   standardRate:     0.20,
   higherRate:       0.40,
-  personalCredit:   1_875,
-  payeCredit:       1_875,
+  personalCredit:   2_000,    // Budget 2025 increase, unchanged 2026
+  payeCredit:       2_000,    // Budget 2025 increase, unchanged 2026
 
   uscExemptThreshold: 13_000,
   uscBands: [
     { to: 12_012,    rate: 0.005 },
-    { to: 25_760,    rate: 0.02  },
-    { to: 70_044,    rate: 0.04  },
+    { to: 28_700,    rate: 0.02  },  // upper limit raised in Budget 2026
+    { to: 70_044,    rate: 0.03  },  // reduced to 3% since Budget 2025
     { to: Infinity,  rate: 0.08  },
   ] as { to: number; rate: number }[],
 
   prsiThreshold: 18_304,  // €352/week × 52
-  prsiRate:      0.04,
+  prsiRate:      0.042,   // 4.2% from October 2025 (rises to 4.35% Oct 2026)
 } as const
 
 // ── Core calculator ───────────────────────────────────────────────────────────

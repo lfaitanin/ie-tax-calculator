@@ -5,7 +5,7 @@ const translations = {
     // Hero
     heroTitle: 'How much will you take home?',
     heroSubtitle: 'Enter your salary and see your exact net pay after Irish taxes — instantly.',
-    taxYear: '2025 tax rates · Budget Oct 2024',
+    taxYear: '2026 tax rates · Budget Oct 2025',
 
     // Input tabs
     annualLabel:  'Annual',
@@ -110,7 +110,7 @@ const translations = {
 
     heroTitle: 'Quanto você vai receber?',
     heroSubtitle: 'Insira seu salário e veja o líquido após os impostos irlandeses — na hora.',
-    taxYear: 'Alíquotas 2025 · Budget out/2024',
+    taxYear: 'Alíquotas 2026 · Budget out/2025',
 
     annualLabel:  'Anual',
     monthlyLabel: 'Mensal',
@@ -202,7 +202,7 @@ const translations = {
 
     heroTitle: '¿Cuánto llevarás a casa?',
     heroSubtitle: 'Ingresa tu salario y ve tu sueldo neto después de los impuestos irlandeses — al instante.',
-    taxYear: 'Tasas 2025 · Presupuesto oct/2024',
+    taxYear: 'Tasas 2026 · Presupuesto oct/2025',
 
     annualLabel:  'Anual',
     monthlyLabel: 'Mensual',

@@ -250,10 +250,16 @@ function TaxSavingTips() {
 
 // ── Root App ──────────────────────────────────────────────────────────────────
 
+// Lets other sites deep-link with a prefilled annual salary, e.g. ?salary=34000
+function salaryFromUrl(): string {
+  const n = Number(new URLSearchParams(window.location.search).get('salary'))
+  return n > 0 ? Math.round(n).toLocaleString('en-IE') : ''
+}
+
 export default function App() {
   const { t } = useLang()
   const [mode, setMode]                   = useState<Mode>('annual')
-  const [raw, setRaw]                     = useState('')
+  const [raw, setRaw]                     = useState(salaryFromUrl)
   const [hourlyRaw, setHourlyRaw]         = useState('')
   const [hoursPerWeek, setHoursPerWeek]   = useState(39)
 

@@ -82,14 +82,14 @@ const translations = {
 
     // How it works
     howItWorksTitle: '📖 How Ireland taxes you',
-    incomeTaxInfo:   '20% on the first €42,000 · 40% above that. Reduced by €3,750 in standard credits (personal + PAYE). Credits mean the first ~€18,750 earns zero income tax.',
-    uscInfo:         '0.5% → 2% → 4% → 8% in salary bands. Exempt if total income ≤ €13,000. No credits apply — everyone pays from €1.',
-    prsiInfo:        '4% flat on all earnings for PAYE employees earning over €352/week (€18,304/yr). Funds jobseeker, maternity leave & state pension.',
+    incomeTaxInfo:   '20% on the first €44,000 · 40% above that. Reduced by €4,000 in standard credits (personal + PAYE). Credits mean the first ~€20,000 earns zero income tax.',
+    uscInfo:         '0.5% → 2% → 3% → 8% in salary bands. Exempt if total income ≤ €13,000. No credits apply — everyone pays from €1.',
+    prsiInfo:        '4.2% flat on all earnings for PAYE employees earning over €352/week (€18,304/yr). Funds jobseeker, maternity leave & state pension.',
 
     // Min wage
     minWageTitle:   '💼 Minimum Wage',
-    minWageHourly:  '€13.50/hr',
-    minWageDesc:    '39 hrs/wk · 52 weeks = €27,378/yr gross → ~€24,000 net.',
+    minWageHourly:  '{rate}/hr',
+    minWageDesc:    '39 hrs/wk · 52 weeks = {gross}/yr gross → {net} net.',
     calcMinWage:    'Calculate minimum wage →',
     selectedLabel:  '✓ Selected',
 
@@ -177,13 +177,13 @@ const translations = {
     tip6Body:  'Acesse o Revenue myAccount e veja "Manage Your Tax Credits". Muitos imigrantes perdem o Personal Tax Credit, Home Carer Credit ou Single Person Child Carer Credit. Cada um vale centenas por ano.',
 
     howItWorksTitle: '📖 Como a Irlanda tributa',
-    incomeTaxInfo:   '20% sobre os primeiros €42.000 · 40% acima disso. Reduzido por €3.750 em créditos padrão (pessoal + PAYE). Os créditos fazem com que os primeiros ~€18.750 não paguem imposto de renda.',
-    uscInfo:         '0,5% → 2% → 4% → 8% em faixas salariais. Isento se renda total ≤ €13.000. Sem créditos — todos pagam desde €1.',
-    prsiInfo:        '4% fixo sobre todo o salário para funcionários PAYE que ganham mais de €352/semana (€18.304/ano). Financia desemprego, licença-maternidade e aposentadoria.',
+    incomeTaxInfo:   '20% sobre os primeiros €44.000 · 40% acima disso. Reduzido por €4.000 em créditos padrão (pessoal + PAYE). Os créditos fazem com que os primeiros ~€20.000 não paguem imposto de renda.',
+    uscInfo:         '0,5% → 2% → 3% → 8% em faixas salariais. Isento se renda total ≤ €13.000. Sem créditos — todos pagam desde €1.',
+    prsiInfo:        '4,2% fixo sobre todo o salário para funcionários PAYE que ganham mais de €352/semana (€18.304/ano). Financia desemprego, licença-maternidade e aposentadoria.',
 
     minWageTitle:  '💼 Salário Mínimo',
-    minWageHourly: '€13,50/hora',
-    minWageDesc:   '39h/sem · 52 semanas = €27.378/ano bruto → ~€24.000 líquido.',
+    minWageHourly: '{rate}/hora',
+    minWageDesc:   '39h/sem · 52 semanas = {gross}/ano bruto → {net} líquido.',
     calcMinWage:   'Calcular salário mínimo →',
     selectedLabel: '✓ Selecionado',
 
@@ -269,13 +269,13 @@ const translations = {
     tip6Body:  'Entra en Revenue myAccount y revisa "Manage Your Tax Credits". Muchos inmigrantes pierden el Personal Tax Credit, Home Carer Credit o Single Person Child Carer Credit. Cada uno vale cientos al año.',
 
     howItWorksTitle: '📖 Cómo tributa Irlanda',
-    incomeTaxInfo:   '20% sobre los primeros €42.000 · 40% por encima. Reducido por €3.750 en créditos estándar (personal + PAYE). Los créditos hacen que los primeros ~€18.750 no paguen IRPF.',
-    uscInfo:         '0,5% → 2% → 4% → 8% en tramos salariales. Exento si ingresos totales ≤ €13.000. Sin créditos — todos pagan desde €1.',
-    prsiInfo:        '4% fijo sobre todos los ingresos para empleados PAYE que ganan más de €352/semana (€18.304/año). Financia desempleo, baja maternal y pensión estatal.',
+    incomeTaxInfo:   '20% sobre los primeros €44.000 · 40% por encima. Reducido por €4.000 en créditos estándar (personal + PAYE). Los créditos hacen que los primeros ~€20.000 no paguen IRPF.',
+    uscInfo:         '0,5% → 2% → 3% → 8% en tramos salariales. Exento si ingresos totales ≤ €13.000. Sin créditos — todos pagan desde €1.',
+    prsiInfo:        '4,2% fijo sobre todos los ingresos para empleados PAYE que ganan más de €352/semana (€18.304/año). Financia desempleo, baja maternal y pensión estatal.',
 
     minWageTitle:  '💼 Salario Mínimo',
-    minWageHourly: '€13,50/hora',
-    minWageDesc:   '39h/sem · 52 semanas = €27.378/año bruto → ~€24.000 neto.',
+    minWageHourly: '{rate}/hora',
+    minWageDesc:   '39h/sem · 52 semanas = {gross}/año bruto → {net} neto.',
     calcMinWage:   'Calcular salario mínimo →',
     selectedLabel: '✓ Seleccionado',
 

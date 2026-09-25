@@ -3,7 +3,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
 import {
   calcTax, calcPensionSaving, hourlyToAnnual,
-  fmt, fmtPct, PRESETS, HOURS_PRESETS,
+  fmt, fmtPct, PRESETS, HOURS_PRESETS, MIN_WAGE_HOURLY, MIN_WAGE_ANNUAL,
   type TaxBreakdown,
 } from './utils/calculator'
 import { useLang } from './i18n/LangContext'
@@ -257,7 +257,8 @@ function salaryFromUrl(): string {
 }
 
 export default function App() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  const numberLocale = lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-ES' : 'en-IE'
   const [mode, setMode]                   = useState<Mode>('annual')
   const [raw, setRaw]                     = useState(salaryFromUrl)
   const [hourlyRaw, setHourlyRaw]         = useState('')
@@ -483,11 +484,17 @@ export default function App() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
             <p className="font-bold text-blue-900 text-sm mb-1">{t.minWageTitle}</p>
-            <p className="text-3xl font-black text-blue-700 mb-1">{t.minWageHourly}</p>
-            <p className="text-xs text-blue-600 leading-relaxed mb-3">{t.minWageDesc}</p>
-            <button onClick={() => pickPreset(27_378)}
+            <p className="text-3xl font-black text-blue-700 mb-1">
+              {t.minWageHourly.replace('{rate}', '€' + MIN_WAGE_HOURLY.toLocaleString(numberLocale, { minimumFractionDigits: 2 }))}
+            </p>
+            <p className="text-xs text-blue-600 leading-relaxed mb-3">
+              {t.minWageDesc
+                .replace('{gross}', '€' + MIN_WAGE_ANNUAL.toLocaleString(numberLocale))
+                .replace('{net}', '€' + Math.round(calcTax(MIN_WAGE_ANNUAL).netPay).toLocaleString(numberLocale))}
+            </p>
+            <button onClick={() => pickPreset(MIN_WAGE_ANNUAL)}
               className="text-xs font-bold text-blue-700 underline">
-              {hasResult && gross === 27_378 ? t.selectedLabel : t.calcMinWage}
+              {hasResult && gross === MIN_WAGE_ANNUAL ? t.selectedLabel : t.calcMinWage}
             </button>
           </div>
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4">

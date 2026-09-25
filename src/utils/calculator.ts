@@ -151,6 +151,10 @@ export function hourlyToAnnual(hourlyRate: number, hoursPerWeek: number): number
   return hourlyRate * hoursPerWeek * 52
 }
 
+// National Minimum Wage from 1 January 2026 — update each year alongside the tax rates
+export const MIN_WAGE_HOURLY = 14.15
+export const MIN_WAGE_ANNUAL = Math.round(hourlyToAnnual(MIN_WAGE_HOURLY, 39))
+
 export const HOURS_PRESETS: { value: number; tag?: 'stamp2Term' | 'fullTime' }[] = [
   { value: 20, tag: 'stamp2Term' },
   { value: 25 },
@@ -169,4 +173,4 @@ export function fmtPct(n: number): string {
   return n.toFixed(1) + '%'
 }
 
-export const PRESETS = [28_080, 35_000, 45_000, 60_000, 80_000, 100_000]
+export const PRESETS = [MIN_WAGE_ANNUAL, 35_000, 45_000, 60_000, 80_000, 100_000]
